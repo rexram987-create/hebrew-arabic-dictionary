@@ -1,0 +1,86 @@
+[
+  {
+    "id": "he-shalom",
+    "hebrew": "שלום",
+    "arabic": {
+      "msa": {
+        "text": "سَلَام",
+        "transliteration_he": "סַלַאם"
+      },
+      "palestinian": {
+        "text": "سَلَام",
+        "transliteration_he": "סַלַאם"
+      }
+    },
+    "sources": [
+      {
+        "name": "manual-demo",
+        "license": "original-sample"
+      }
+    ],
+    "status": "sample"
+  },
+  {
+    "id": "he-bayit",
+    "hebrew": "בית",
+    "arabic": {
+      "msa": {
+        "text": "بَيْت",
+        "transliteration_he": "בַּיְת"
+      },
+      "palestinian": {
+        "text": "بَيْت",
+        "transliteration_he": "בֵּית"
+      }
+    },
+    "sources": [
+      {
+        "name": "manual-demo",
+        "license": "original-sample"
+      }
+    ],
+    "status": "sample"
+  },
+  {
+    "id": "he-mayim",
+    "hebrew": "מים",
+    "arabic": {
+      "msa": {
+        "text": "مَاء",
+        "transliteration_he": "מַאא׳"
+      },
+      "palestinian": {
+        "text": "مَيّ",
+        "transliteration_he": "מַיּ"
+      }
+    },
+    "sources": [
+      {
+        "name": "manual-demo",
+        "license": "original-sample"
+      }
+    ],
+    "status": "sample"
+  },
+  {
+    "id": "he-ani-rotze",
+    "hebrew": "אני רוצה",
+    "arabic": {
+      "msa": {
+        "text": "أُرِيدُ",
+        "transliteration_he": "אוּרִידֻ"
+      },
+      "palestinian": {
+        "text": "بِدِّي",
+        "transliteration_he": "בִּדִּי"
+      }
+    },
+    "sources": [
+      {
+        "name": "manual-demo",
+        "license": "original-sample"
+      }
+    ],
+    "status": "sample"
+  }
+]
