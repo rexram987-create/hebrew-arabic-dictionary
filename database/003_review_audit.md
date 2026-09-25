@@ -64,3 +64,14 @@ Compared all 34 Palestinian draft headwords to normalized LEMMA and FORM columns
 - Cat بِسّ ID 1442 is cat; the older draft بِسَّة was not found as an exact normalized lemma/form. Horse حْصَان ID 6229; sea بَحَر ID 812.
 
 This scan is NOT a full pronunciation/TTS or 68-form verification. Source match means this sense is attested in the dataset, not that all dialect speakers use it or that Hebrew transliteration is approved. Keep import blocked.
+
+## Second-pass gloss search beyond exact Arabic spelling (2026-09-25)
+Searched the user-supplied TSV's **English glosses** for the intended meaning, then inspected lemma, CAPHI++, and ID. This reveals alternate Palestinian forms that exact-form search missed:
+- **ear**: ID 205 ذَان, CAPHI++ D aa n, gloss ear. This is *not* confirmation of draft وِدِن, which was cross-checked against Madrasah separately. Keep dialectal spelling/pronunciation evidence separate.
+- **mouth**: ID 3433 ثِمّ, CAPHI++ T i m m, gloss mouth; ID 2617 بُوز, CAPHI++ b uu z, gloss mouth; ID 33847 نِيع, CAPHI++ n ii 3, gloss mouth. The earlier exact تم search only matched verbs; it did not prove that تُمّ is wrong. Madrasah's تُمّ must be cited independently, not attributed to Maknuune.
+- **soil**: ID 2912 تُرْبِة, CAPHI++ t u r b e, gloss soil. Draft أَرْض (ID 255) means land/territory/land_plot. Hebrew אדמה is ambiguous: clarify whether intended sense is soil or land before replacing the translation.
+- **rain**: ID 30854 مَطَرَة gloss rain; ID 15637 شِتَاء gloss winter;rain; ID 23063 غَيْث gloss rain. Do not conflate شِتَاء (ID 15637) with شِتَا (ID 15638, winter).
+- **daughter**: no exact standalone 'daughter' gloss was found in the scanned lemma=headword records; بنت (ID 2341) gloss girl, and the daughter sense needs separate contextual verification.
+- **female friend**: no exact standalone 'female_friend' gloss was found in this scan; Madrasah cross-check remains distinct.
+
+Decision: no speculative bulk edits based solely on the English gloss search. Resolve אדמה's Hebrew intended sense and the dialect policy before finalizing the 34-row import.
