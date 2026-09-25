@@ -33,10 +33,6 @@ h2{font-size:1.3rem;margin:0 0 14px}
 .speak:disabled{opacity:.55;cursor:not-allowed}
 .audio-status{font-size:.83rem;color:#c5d8d8;margin-top:6px;min-height:1.2em}
 .audio-help{font-size:.83rem;color:#c5d8d8;margin-top:10px}
-.pronunciation-test{margin-top:12px;display:grid;gap:6px}
-.pronunciation-test label{font-size:.88rem;color:#c5d8d8}
-.pronunciation-test select{font:inherit;font-size:.94rem;width:100%;min-height:44px;padding:8px;border-radius:10px;background:#162a32;color:#fff;border:1px solid #658080}
-.pronunciation-test .hint{font-size:.8rem;color:#c5d8d8}
 footer{font-size:.82rem;color:#b7cacc;margin:30px 0}
 @media(max-width:380px){body{padding:14px}form{gap:8px}button{padding:10px 14px}article{padding:14px}}
 </style>
@@ -65,13 +61,6 @@ const count=document.getElementById("count");
 const canSpeak=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
 let activeSpeech=null;
 // Speech-only overrides never modify the dictionary spelling or its stored vocalization.
-const pronunciationOverrides={
-  "شمس":[
-    {label:"בלי ניקוד — شمس",speech:"شمس"},
-    {label:"עם ניקוד — شَمْس",speech:"شَمْس"},
-    {label:"עם סוכון בסוף — شَمْسْ",speech:"شَمْسْ"}
-  ]
-};
 function normalizeArabic(value){
   return value.normalize("NFC").replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,"");
 }
@@ -130,22 +119,9 @@ form.addEventListener("submit",async event=>{
           const transliteration=document.createElement("div");transliteration.className="transliteration";transliteration.textContent="תעתיק: "+form.transliteration_he;row.append(transliteration);
         }
         if(form?.text){
-          let speechText=form.text;
-          const variants=pronunciationOverrides[normalizeArabic(form.text)];
-          if(variants){
-            const test=document.createElement("div");test.className="pronunciation-test";
-            const testLabel=document.createElement("label");testLabel.textContent="בדיקת הגייה (משפיעה על השמע בלבד)";
-            const choice=document.createElement("select");
-            const choiceId="pronunciation-"+key+"-"+out.childElementCount;
-            choice.id=choiceId;testLabel.htmlFor=choiceId;
-            for(const variant of variants){
-              const option=document.createElement("option");option.value=variant.speech;option.textContent=variant.label;choice.append(option);
-            }
-            speechText=choice.value;
-            choice.addEventListener("change",()=>{speechText=choice.value;});
-            const hint=document.createElement("div");hint.className="hint";hint.textContent="בחרו צורה והשמיעו כדי להשוות. הכתיב במילון נשאר ללא שינוי.";
-            test.append(testLabel,choice,hint);row.append(test);
-          }
+          // Display the original vowelized spelling; pronounce "sun" without diacritics
+          // because the tested Android Arabic voice adds an unwanted ending otherwise.
+          const speechText=normalizeArabic(form.text)==="شمس"?"شمس":form.text;
           const play=document.createElement("button");
           play.type="button";play.className="speak";play.textContent="🔊 השמע הגייה";
           play.setAttribute("aria-label","השמע הגייה ב"+label+": "+form.text);
