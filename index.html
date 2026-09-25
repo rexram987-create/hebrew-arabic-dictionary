@@ -29,6 +29,10 @@ h2{font-size:1.3rem;margin:0 0 14px}
 .dialect{font-size:.85rem;color:#a6c8c8;margin-bottom:4px}
 .arabic{font-size:1.45rem;line-height:1.65;overflow-wrap:anywhere}
 .transliteration{color:#d7e4e4;font-size:.97rem;margin-top:2px}
+.speak{display:inline-flex;align-items:center;gap:7px;min-height:44px;margin-top:12px;padding:8px 14px;border:1px solid #74c8b8;background:#244940;color:#f4fffb;border-radius:12px;font-size:.94rem;font-weight:600}
+.speak:disabled{opacity:.55;cursor:not-allowed}
+.audio-status{font-size:.83rem;color:#c5d8d8;margin-top:6px;min-height:1.2em}
+.audio-help{font-size:.83rem;color:#c5d8d8;margin-top:10px}
 footer{font-size:.82rem;color:#b7cacc;margin:30px 0}
 @media(max-width:380px){body{padding:14px}form{gap:8px}button{padding:10px 14px}article{padding:14px}}
 </style>
@@ -45,6 +49,7 @@ footer{font-size:.82rem;color:#b7cacc;margin:30px 0}
 <button id="submit" type="submit">חפש</button>
 </form>
 <div id="out" aria-live="polite"><p class="notice">הקלידו מילה כדי להתחיל לחפש.</p></div>
+<p class="audio-help">ההשמעה היא קול ממוחשב מהמכשיר. הגייה פלסטינית מדויקת תלויה בזמינות קול מתאים בטלפון; הקול הספרותי עשוי לשמש כתחליף.</p>
 <footer>המאגר נמצא בהרחבה. התעתיקים והניקוד בדוגמאות החדשות ממתינים לבדיקה לשונית.</footer>
 </main>
 <script>
@@ -53,6 +58,30 @@ const input=document.getElementById("q");
 const out=document.getElementById("out");
 const button=document.getElementById("submit");
 const count=document.getElementById("count");
+const canSpeak=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
+let activeSpeech=null;
+function speakArabic(text,dialect,button,status){
+  if(!canSpeak){status.textContent="המכשיר או הדפדפן אינם תומכים בהשמעה.";return;}
+  window.speechSynthesis.cancel();
+  if(activeSpeech){activeSpeech.button.textContent="🔊 השמע הגייה";activeSpeech=null;}
+  const voices=window.speechSynthesis.getVoices().filter(v=>/^ar(?:-|$)/i.test(v.lang));
+  const preferred=dialect==="palestinian"
+    ?voices.find(v=>/^ar-PS$/i.test(v.lang))
+    :voices.find(v=>/^ar-(SA|EG)$/i.test(v.lang));
+  const voice=preferred||voices.find(v=>/^ar-/i.test(v.lang))||voices[0];
+  if(!voice){status.textContent="לא נמצא קול ערבי במכשיר. אפשר להתקין קול ערבי בהגדרות ההקראה של Android.";return;}
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang=voice.lang;
+  utterance.voice=voice;
+  utterance.rate=.82;
+  const fallback=dialect==="palestinian"&&!/^ar-PS$/i.test(voice.lang);
+  status.textContent=fallback?"מושמע קול ערבי חלופי; ייתכן שאינו מבטא את הניב הפלסטיני במדויק.":"מנגן הגייה ממוחשבת…";
+  button.textContent="■ עצור השמעה";
+  activeSpeech={button,utterance};
+  utterance.onend=()=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";activeSpeech=null;}};
+  utterance.onerror=event=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";activeSpeech=null;if(event.error!=="canceled"&&event.error!=="interrupted")status.textContent="ההשמעה נכשלה. בדקו שקול ערבי מותקן במכשיר."; }};
+  window.speechSynthesis.speak(utterance);
+}
 fetch("/api/health").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
   count.textContent=Number.isInteger(d.entries)?d.entries+" ערכים במאגר":"מאגר המילון";
 }).catch(()=>{count.textContent="מאגר המילון";});
@@ -64,6 +93,7 @@ form.addEventListener("submit",async event=>{
   event.preventDefault();
   const q=input.value.trim();
   if(!q)return;
+  if(canSpeak){window.speechSynthesis.cancel();activeSpeech=null;}
   button.disabled=true;notice("מחפש…");
   try{
     const response=await fetch("/api/search?q="+encodeURIComponent(q));
@@ -81,6 +111,18 @@ form.addEventListener("submit",async event=>{
         const arabic=document.createElement("div");arabic.className="arabic";arabic.dir="rtl";arabic.lang="ar";arabic.textContent=form?.text||"טרם נוסף תרגום";row.append(arabic);
         if(form?.transliteration_he){
           const transliteration=document.createElement("div");transliteration.className="transliteration";transliteration.textContent="תעתיק: "+form.transliteration_he;row.append(transliteration);
+        }
+        if(form?.text){
+          const play=document.createElement("button");
+          play.type="button";play.className="speak";play.textContent="🔊 השמע הגייה";
+          play.setAttribute("aria-label","השמע הגייה ב"+label+": "+form.text);
+          const status=document.createElement("div");status.className="audio-status";status.setAttribute("aria-live","polite");
+          if(!canSpeak){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
+          play.addEventListener("click",()=>{
+            if(activeSpeech?.button===play){window.speechSynthesis.cancel();activeSpeech=null;play.textContent="🔊 השמע הגייה";status.textContent="ההשמעה נעצרה.";}
+            else speakArabic(form.text,key,play,status);
+          });
+          row.append(play,status);
         }
         article.append(row);
       }
