@@ -41,3 +41,10 @@ Obtain the source lexicon TSV from the project site's official download, record 
 - Corrections needed in candidate draft: Palestinian sister should be compared to أُخُت, son to اِبِن, girl/daughter to بِنِت, man to زَلَمِة, hair to شَعَر, fish سَمَكِة is **supported** by source ID 14964; tree شَجَرِة is **not supported** by source ID 15643 (شَجَرَة, CAPHI++ sh a J a r a), flower زَهْرِة is **not supported** by source ID 13269 (زَهْرَة, CAPHI++ z a h r a).
 - Serious semantic conflict: draft Palestinian rain شِتَا, but source ID 15638 glosses it **winter**. Keep this word out of a rain entry pending review of a suitable Palestinian rain term. Source ID 26506 قَلْب is glossed **stomach**, not heart; do not cite it as confirmation of the heart gloss. Female friend صَاحْبِة and ear وِدْن were not found as exact normalized headwords in this first pass.
 - Source matching is not identical to approval: this is a **first-pass audit**, with dialect variation and semantics still requiring review. Do not import 003 to Neon yet.
+
+## CAPHI++ and source-row correction (2026-09-25)
+- Verified directly against user-uploaded Maknuune v1.0.1 TSV: ID 17472 صَاحِب, CAPHI++ s. aa 7 i b, gloss friend;companion. Hebrew transliteration corrected from צַאחֶבּ to צַאחִבּ.
+- ID 22266 عَين, CAPHI++ 3 ee n, gloss eye, MSA gloss عَيْن. Palestinian Hebrew transliteration corrected from עַיְן to עֵין; CODA orthography and actual spoken vowel must not be conflated.
+- Rain-source correction: ID 30854 مَطَرَة = rain, ID 30855 مَطَرَة = water_bottle, ID 30853 مَطَر = airport;airfield. The TSV does NOT supply a noun entry مَطَر glossed rain, so do not label the Palestinian noun form مَطَر source-verified by this TSV. Standard Arabic مَطَر means rain; retain Palestinian usage provisionally until corroborated elsewhere.
+- ID 26506 قَلْب = stomach (MSA gloss معدة); not evidence for heart. Other heart-related phrases exist but do not resolve standalone headword sense.
+- NOTE: earlier audit line claiming source ID 30854 had airport gloss is INCORRECT; the airport gloss is ID 30853. This section supersedes that line.
