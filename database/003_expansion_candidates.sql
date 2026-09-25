@@ -3,7 +3,9 @@
 -- Palestinian urban variants are provisional; local pronunciations differ (especially qaf).
 -- Arabic fish is singular سمكة, not mass-noun سمك. Keep review_status='unreviewed'.
 -- Maknuune v1.0.1 row checks: sister 151, son 2425, girl 2341, man 13123,
--- hair 16356, fish 14964, tree 15643, flower 13269, rain 30854.
+-- hair 16356, fish 14964, tree 15643, flower 13269; rain: source ID 30855 lists مطرة, while the word مطر
+-- occurs as 'rain' in source example ID 2735 and MSA gloss of ID 23064.
+-- ID 30854 has anomalous airport gloss; do not treat it as rain evidence.
 -- Maknuune row 15638 glosses شِتَا as winter, so it is NOT used for rain here.
 -- بنت can mean both daughter and girl; source row 2341 explicitly glosses girl.
 -- Some urban Palestinian pronunciations have final -e for feminine ta marbuta.
@@ -119,7 +121,7 @@ FROM (VALUES
 ('he-expansion-31','msa','سَمَاء','سماء','סַמַאא׳'),
 ('he-expansion-31','palestinian','سَمَا','سما','סַמַא'),
 ('he-expansion-32','msa','مَطَر','مطر','מַטַר'),
-('he-expansion-32','palestinian','مَطَرَة','مطرة','מַטַרַה'),
+('he-expansion-32','palestinian','مَطَر','مطر','מַטַר'),
 ('he-expansion-33','msa','رِيح','ريح','רִיח'),
 ('he-expansion-33','palestinian','رِيح','ريح','רִיח'),
 ('he-expansion-34','msa','نَار','نار','נַאר'),
