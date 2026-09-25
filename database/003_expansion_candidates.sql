@@ -31,6 +31,7 @@
 -- Source comparisons are first-pass only: other forms and meanings remain unreviewed.
 -- Sense split: existing אדמה means land/ground (أرض); new אדמה (חומר הקרקע)
 -- means soil (تربة), Maknuune v1.0.1 ID 2912. Hebrew search אדמה returns both.
+-- Source provenance is preliminary: only mapped Palestinian senses have row IDs.
 -- Do NOT execute in Neon until all entries and transliterations are reviewed.
 BEGIN;
 INSERT INTO dictionary_entries(entry_key,hebrew,hebrew_search,review_status)
@@ -169,10 +170,42 @@ WHERE NOT EXISTS (
 )
 ON CONFLICT(entry_id,dialect,arabic_vocalized) DO NOTHING;
 
-INSERT INTO entry_sources(entry_id,source_id)
-SELECT e.id,s.id FROM dictionary_entries e CROSS JOIN dictionary_sources s
-WHERE e.entry_key LIKE 'he-expansion-%' AND s.code='manual-demo'
-ON CONFLICT(entry_id,source_id) DO NOTHING;
+-- The expansion is not a set of original demonstration entries. Do not attach
+-- manual-demo to these entries. Source links below record ONLY first-pass matched
+-- Maknuune senses; they do not imply that Hebrew translations, MSA forms, regional
+-- pronunciation or the full entry have been independently reviewed.
+INSERT INTO dictionary_sources(code,title,homepage,license_id,license_url,attribution)
+VALUES ('maknuune-v1.0.1','Maknuune Palestinian Arabic Lexicon v1.0.1',
+        'https://sites.google.com/nyu.edu/palestine-lexicon/download',
+        'CC BY-SA 4.0','https://creativecommons.org/licenses/by-sa/4.0/',
+        'Maknuune Palestinian Arabic Lexicon, v1.0.1; source-row sense checks, adapted with Hebrew glosses')
+ON CONFLICT(code) DO NOTHING;
+
+INSERT INTO entry_sources(entry_id,source_id,source_record_id,change_notes)
+SELECT e.id,src.id,v.record_id,
+       'First-pass Palestinian lemma/gloss comparison only; see database/003_review_audit.md'
+FROM (VALUES
+ ('he-expansion-01','529'),('he-expansion-02','11'),
+ ('he-expansion-03','162'),('he-expansion-04','151'),
+ ('he-expansion-05','2425'),('he-expansion-07','36009'),
+ ('he-expansion-08','2341'),('he-expansion-09','13123'),
+ ('he-expansion-10','30368'),('he-expansion-11','17472'),
+ ('he-expansion-13','36210'),('he-expansion-14','10896'),
+ ('he-expansion-15','22266'),('he-expansion-19','15087'),
+ ('he-expansion-20','16356'),('he-expansion-21','1442'),
+ ('he-expansion-22','28213'),('he-expansion-23','6229'),
+ ('he-expansion-24','14964'),('he-expansion-25','19781'),
+ ('he-expansion-26','15643'),('he-expansion-27','13269'),
+ ('he-expansion-28','812'),('he-expansion-29','3559'),
+ ('he-expansion-30','255'),('he-expansion-31','15012'),
+ ('he-expansion-33','12519'),('he-expansion-34','33728'),
+ ('he-expansion-35','2912')
+) AS v(entry_key,record_id)
+JOIN dictionary_entries e ON e.entry_key=v.entry_key
+JOIN dictionary_sources src ON src.code='maknuune-v1.0.1'
+ON CONFLICT(entry_id,source_id) DO UPDATE SET
+ source_record_id=EXCLUDED.source_record_id,
+ change_notes=EXCLUDED.change_notes;
 COMMIT;
 SELECT (SELECT COUNT(*) FROM dictionary_entries) AS entries,
        (SELECT COUNT(*) FROM arabic_forms) AS forms;
