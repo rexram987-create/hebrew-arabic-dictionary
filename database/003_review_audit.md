@@ -75,3 +75,15 @@ Searched the user-supplied TSV's **English glosses** for the intended meaning, t
 - **female friend**: no exact standalone 'female_friend' gloss was found in this scan; Madrasah cross-check remains distinct.
 
 Decision: no speculative bulk edits based solely on the English gloss search. Resolve אדמה's Hebrew intended sense and the dialect policy before finalizing the 34-row import.
+
+## Import gate follow-up: 35-entry revision (2026-09-25)
+The current candidate file has **35** Hebrew entries and **70** proposed Arabic forms (35 MSA, 35 Palestinian); earlier 34/68 totals in this historical audit refer to the previous revision, not the current file. Existing starter counts must be checked in Neon rather than assumed.
+
+Critical checks found by inspecting the SQL draft:
+1. **Source provenance**: the expansion currently links every new entry to `manual-demo` ("Original demonstration entries"), even though Maknuune and Madrasah informed the draft. This is not accurate per-entry provenance. Before import, create appropriate source records and link only genuinely supported entries with row IDs/URLs; do not imply that all 35 were sourced from either lexicon.
+2. **Written Arabic vs spoken pronunciation**: heart `قَلْب` plus Hebrew `אַלְבּ` mixes standard spelling and urban Palestinian spoken realization; the UI must label the pronunciation as an urban variant rather than claiming the Arabic vowel marks spell the Hebrew transliteration literally. Other regional pronunciations require separate checking.
+3. **SQL re-run behavior**: `WHERE NOT EXISTS` skips *all* proposed forms for a dialect if any existing form is present, so an earlier imported draft will not be corrected by re-running 003. A separately reviewed migration is required.
+4. **Search ambiguity**: `hebrew_search='אדמה'` is intentionally shared by entries 30 and 35. Verify the search endpoint returns both and displays their notes, not only one result.
+5. **Coverage**: confirm both dialect forms, all 35 Hebrew entry keys, source attribution, Hebrew transliteration and UI rendering in staging; do not infer production success from a GitHub commit.
+
+Status: **NOT APPROVED FOR NEON IMPORT**. No production database was changed during this audit.
