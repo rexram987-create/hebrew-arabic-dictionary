@@ -2,11 +2,15 @@
 -- Original draft entries. Palestinian forms and Hebrew transliterations REQUIRE linguistic review;
 -- Palestinian urban variants are provisional; local pronunciations differ (especially qaf).
 -- Arabic fish is singular سمكة, not mass-noun سمك. Keep review_status='unreviewed'.
--- Maknuune v1.0.1 row checks: sister 151, son 2425, girl 2341, man 13123,
--- hair 16356, fish 14964, tree 15643, flower 13269; rain: source ID 30855 lists مطرة, while the word مطر
--- occurs as 'rain' in source example ID 2735 and MSA gloss of ID 23064.
--- ID 30854 has anomalous airport gloss; do not treat it as rain evidence.
--- Maknuune row 15638 glosses شِتَا as winter, so it is NOT used for rain here.
+-- Maknuune v1.0.1 verified row IDs: sister 151, son 2425, girl 2341,
+-- man 13123, hair 16356, fish 14964, tree 15643, flower 13269,
+-- cat 1442, horse 6229, sea 812.
+-- Rain: source ID 30854 مَطَرَة is glossed rain; ID 30855 is water_bottle.
+-- Source ID 30853 مَطَر is glossed airport;airfield (likely homograph
+-- or source error); do not cite it as confirmation of the rain sense.
+-- User-preferred Palestinian مَطَر is retained provisionally pending
+-- a separate dialect-specific source check; MSA مَطَر is standard rain.
+-- Maknuune ID 15638 شِتَا is winter; ID 15637 شِتَاء is winter;rain.
 -- بنت can mean both daughter and girl; source row 2341 explicitly glosses girl.
 -- Some urban Palestinian pronunciations have final -e for feminine ta marbuta.
 -- Palestinian feminine endings follow individual source entries: fish سَمَكِة (-e),
@@ -99,11 +103,11 @@ FROM (VALUES
 ('he-expansion-20','msa','شَعْر','شعر','שַעְר'),
 ('he-expansion-20','palestinian','شَعَر','شعر','שַעַר'),
 ('he-expansion-21','msa','قِطّ','قط','קִטּ'),
-('he-expansion-21','palestinian','بِسَّة','بسة','בִּסַּה'),
+('he-expansion-21','palestinian','بِسّ','بس','בִּסּ'),
 ('he-expansion-22','msa','كَلْب','كلب','כַּלְבּ'),
 ('he-expansion-22','palestinian','كَلْب','كلب','כַּלְבּ'),
 ('he-expansion-23','msa','حِصَان','حصان','חִצַאן'),
-('he-expansion-23','palestinian','حِصَان','حصان','חִצַאן'),
+('he-expansion-23','palestinian','حْصَان','حصان','חְצַאן'),
 ('he-expansion-24','msa','سَمَكَة','سمكة','סַמַכַּה'),
 ('he-expansion-24','palestinian','سَمَكِة','سمكة','סַמַכֶּה'),
 ('he-expansion-25','msa','طَائِر','طائر','טַאאִר'),
@@ -113,7 +117,7 @@ FROM (VALUES
 ('he-expansion-27','msa','زَهْرَة','زهرة','זַהְרַה'),
 ('he-expansion-27','palestinian','زَهْرَة','زهرة','זַהְרַה'),
 ('he-expansion-28','msa','بَحْر','بحر','בַּחְר'),
-('he-expansion-28','palestinian','بَحْر','بحر','בַּחְר'),
+('he-expansion-28','palestinian','بَحَر','بحر','בַּחַר'),
 ('he-expansion-29','msa','جَبَل','جبل','ג׳ַבַּל'),
 ('he-expansion-29','palestinian','جَبَل','جبل','ג׳ַבַּל'),
 ('he-expansion-30','msa','أَرْض','أرض','אַרְדֿ'),
