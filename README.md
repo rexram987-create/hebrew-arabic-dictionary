@@ -1,26 +1,21 @@
 # Hebrew–Arabic Dictionary Engine
 
-A bilingual Hebrew–Arabic dictionary API prototype for Vercel. The goal is Modern Standard Arabic and Palestinian spoken Arabic, with vowel marks, Hebrew transliteration and source attribution.
+A Hebrew–Arabic dictionary prototype for Vercel and Neon PostgreSQL. Supports Modern Standard Arabic and Palestinian Arabic with vowel marks and Hebrew transliteration.
 
 ## Current state
-This is **only a four-entry, manually authored demo**, not the imported Kaikki/Curras database or a PWA. No external dictionary contents have been copied.
+The search and health APIs now query the Neon database, not the local JSON sample. The initial schema contains four manually authored demo entries. Kaikki/Curras have not been imported. This is not yet an installable PWA, and speech synthesis has not been added.
+
+## Setup
+1. Run `database/001_initial_schema.sql` in the Neon SQL editor (already completed for the initial database).
+2. Connect the Neon integration to the Vercel project, and ensure a server-side `DATABASE_URL`, `POSTGRES_URL` or `STORAGE_URL` variable exists for Production and Preview. Do not expose its value in client code or GitHub.
+3. Redeploy after changing environment variables.
 
 ## API
-- `GET /api/health` — prototype state and entry count.
-- `GET /api/search?q=שלום` — Hebrew/Arabic substring search, ignoring Arabic vowel marks.
-- `GET /` — a minimal API test interface, **not** the final PWA.
+- `GET /api/health` — checks the database and returns entry/form/source counts.
+- `GET /api/search?q=שלום` — searches Hebrew and Arabic stored normalized forms, ignoring query vowel marks.
+- `GET /` — a minimal test interface, not the final PWA.
 
 ## Local checks
-`node --test tests/*.test.js` (Node.js 22+). Use `vercel dev` for local HTTP routes.
+`npm install && npm test` (Node.js 22+). Use `vercel dev` for local HTTP routes.
 
-## Planned architecture
-1. Validate and download source snapshots separately; document each dataset license, edition, attribution and changes.
-2. Normalize Hebrew/Arabic lemmas, sense IDs, dialect, vowel marks and transliteration; flag unverified or ambiguous results.
-3. Import approved records to PostgreSQL (prefer Vercel Marketplace Neon), with license/source provenance per record.
-4. Replace demo JSON queries with parameterized database queries. Keep DB credentials in Vercel environment variables.
-5. Add Tatoeba sentence examples with per-example license and audio licensing checks.
-6. Add speech synthesis in the PWA as a separate layer, with device voice/dialect limitations clearly labeled.
-
-**Excluded:** Madrasah dictionary (at the owner's request). Qabas is not included.
-
-Do not assume the imported datasets offer Hebrew translations or complete Palestinian vowel marks for all words.
+**Excluded:** Madrasah dictionary (at the owner's request). Qabas is not included. Do not assume external sources provide Hebrew translations or complete Palestinian vowel marks.
