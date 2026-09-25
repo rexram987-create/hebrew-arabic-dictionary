@@ -21,6 +21,13 @@
 -- CAPHI++ cross-check: friend ID 17472 s. aa 7 i b (Hebrew i, not e);
 -- eye ID 22266 3 ee n (Hebrew ey, not ay). Maknuune uses عَين
 -- as CODA orthography while CAPHI++ encodes the spoken vowel.
+-- Madrasah cross-check: ear وِدِن / וִדֵן (body-part list); mouth تم / תֻםّ
+-- (word list). Heart قَلْب = לב (body-part list); Madrasah writes קַלְבּ,
+-- while earlier draft אַלְבּ is a regional urban pronunciation. Friend
+-- صَاحْبِة / צַאחְבֵּה is attested in Madrasah as female friend.
+-- Rain مَطَر / מַטַר is directly attested in Madrasah; شِتَى is ALSO
+-- glossed rain there (winter-derived), contrary to our earlier blanket
+-- exclusion; retain مَطَر as the basic translation.
 -- Source comparisons are first-pass only: other forms and meanings remain unreviewed.
 -- Do NOT execute in Neon until all entries and transliterations are reviewed.
 BEGIN;
@@ -96,9 +103,9 @@ FROM (VALUES
 ('he-expansion-15','msa','عَيْن','عين','עַיְן'),
 ('he-expansion-15','palestinian','عَين','عين','עֵין'),
 ('he-expansion-16','msa','أُذُن','أذن','אֻד׳ֻן'),
-('he-expansion-16','palestinian','وِدْن','ودن','וִדְן'),
+('he-expansion-16','palestinian','وِدِن','ودن','וִדֵן'),
 ('he-expansion-17','msa','فَم','فم','פַם'),
-('he-expansion-17','palestinian','تِمّ','تم','תִםּ'),
+('he-expansion-17','palestinian','تُمّ','تم','תֻםּ'),
 ('he-expansion-18','msa','قَلْب','قلب','קַלְבּ'),
 ('he-expansion-18','palestinian','قَلْب','قلب','אַלְבּ'),
 ('he-expansion-19','msa','سِنّ','سن','סִןּ'),
