@@ -1,1 +1,94 @@
-<!doctype html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>מנוע המילון העברי–ערבי</title><style>body{font-family:system-ui,sans-serif;max-width:750px;margin:auto;padding:24px;background:#101b22;color:#f4f8f8}input,button{font:inherit;padding:12px;border-radius:10px}input{width:65%;box-sizing:border-box}button{cursor:pointer;background:#16a085;color:white;border:0}article{background:#1b3036;margin-top:12px;padding:14px;border-radius:12px}.muted{color:#bcd1d0}h2{font-size:1.4em}</style></head><body><h1>מנוע המילון העברי–ערבי</h1><p class="muted">אב־טיפוס לבדיקת API. ארבע דוגמאות ידניות בלבד; מאגרי Kaikki ו־Curras טרם יובאו.</p><form id="f"><input id="q" placeholder="חיפוש בעברית או בערבית" aria-label="מילה לחיפוש" required><button>חפש</button></form><div id="out" aria-live="polite"></div><script>document.getElementById('f').onsubmit=async e=>{e.preventDefault();const o=document.getElementById('out');o.textContent='מחפש…';try{const r=await fetch('/api/search?q='+encodeURIComponent(document.getElementById('q').value));const d=await r.json();o.replaceChildren();if(!r.ok){o.textContent=d.error;return}if(!d.results.length){o.textContent='לא נמצאו תוצאות במדגם הקטן';return}for(const item of d.results){const a=document.createElement('article');const h=document.createElement('h2');h.textContent=item.hebrew;a.append(h);for(const [label,key] of [['ספרותית','msa'],['פלסטינית','palestinian']]){const p=document.createElement('p');p.textContent=label+': '+item.arabic[key].text+' — '+item.arabic[key].transliteration_he;a.append(p)}o.append(a)}}catch(err){o.textContent='שגיאת רשת: '+err.message}}</script></body></html>
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b22">
+<title>המילון העברי–ערבי</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#101b22;color:#f4f8f8}
+*{box-sizing:border-box}
+body{margin:0;padding:clamp(16px,4vw,32px);font-size:16px;line-height:1.55}
+main{max-width:720px;margin:0 auto}
+header{margin:0 0 24px}
+h1{font-size:clamp(1.55rem,5vw,2.15rem);line-height:1.25;margin:0 0 10px}
+.intro{color:#c4d5d7;margin:0;font-size:.98rem}
+.count{display:inline-block;margin-top:12px;color:#b9f0df;background:#1b3835;border-radius:999px;padding:4px 12px;font-size:.88rem}
+form{display:flex;gap:10px;margin:24px 0 14px;align-items:stretch}
+input,button{font:inherit;min-height:48px;border-radius:12px}
+input{flex:1;min-width:0;width:100%;padding:12px 14px;border:1px solid #658080;background:#fff;color:#16262c;font-size:1rem}
+input:focus-visible,button:focus-visible{outline:3px solid #b5f5e2;outline-offset:3px}
+button{flex:none;padding:10px 20px;cursor:pointer;background:#169b87;color:#fff;border:0;font-weight:700}
+button:disabled{opacity:.65;cursor:wait}
+#out{margin-top:18px}
+.notice{color:#d1e0e1;padding:12px 0}
+article{background:#1d323a;margin:0 0 14px;padding:18px;border-radius:16px;border:1px solid #35515a}
+h2{font-size:1.3rem;margin:0 0 14px}
+.form-row{padding:12px 0;border-top:1px solid #3a5159}
+.form-row:first-of-type{border-top:0}
+.dialect{font-size:.85rem;color:#a6c8c8;margin-bottom:4px}
+.arabic{font-size:1.45rem;line-height:1.65;overflow-wrap:anywhere}
+.transliteration{color:#d7e4e4;font-size:.97rem;margin-top:2px}
+footer{font-size:.82rem;color:#b7cacc;margin:30px 0}
+@media(max-width:380px){body{padding:14px}form{gap:8px}button{padding:10px 14px}article{padding:14px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>המילון העברי–ערבי</h1>
+<p class="intro">חיפוש בעברית ובערבית • ערבית ספרותית וערבית פלסטינית • ניקוד ותעתיק עברי</p>
+<span class="count" id="count" aria-live="polite">טוען את מספר הערכים…</span>
+</header>
+<form id="f" role="search">
+<input id="q" type="search" placeholder="הקלידו מילה בעברית או בערבית" aria-label="מילה לחיפוש" autocomplete="off" required maxlength="100">
+<button id="submit" type="submit">חפש</button>
+</form>
+<div id="out" aria-live="polite"><p class="notice">הקלידו מילה כדי להתחיל לחפש.</p></div>
+<footer>המאגר נמצא בהרחבה. התעתיקים והניקוד בדוגמאות החדשות ממתינים לבדיקה לשונית.</footer>
+</main>
+<script>
+const form=document.getElementById("f");
+const input=document.getElementById("q");
+const out=document.getElementById("out");
+const button=document.getElementById("submit");
+const count=document.getElementById("count");
+fetch("/api/health").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+  count.textContent=Number.isInteger(d.entries)?d.entries+" ערכים במאגר":"מאגר המילון";
+}).catch(()=>{count.textContent="מאגר המילון";});
+function notice(message){
+  out.replaceChildren();
+  const p=document.createElement("p");p.className="notice";p.textContent=message;out.append(p);
+}
+form.addEventListener("submit",async event=>{
+  event.preventDefault();
+  const q=input.value.trim();
+  if(!q)return;
+  button.disabled=true;notice("מחפש…");
+  try{
+    const response=await fetch("/api/search?q="+encodeURIComponent(q));
+    const data=await response.json();
+    if(!response.ok){notice("החיפוש אינו זמין כרגע. נסו שוב בעוד רגע.");return;}
+    if(!Array.isArray(data.results)||!data.results.length){notice("לא נמצאו תוצאות עבור המילה הזאת במאגר הנוכחי.");return;}
+    out.replaceChildren();
+    for(const item of data.results){
+      const article=document.createElement("article");
+      const heading=document.createElement("h2");heading.textContent=item.hebrew;article.append(heading);
+      for(const [label,key] of [["ערבית ספרותית","msa"],["ערבית פלסטינית","palestinian"]]){
+        const row=document.createElement("section");row.className="form-row";
+        const caption=document.createElement("div");caption.className="dialect";caption.textContent=label;row.append(caption);
+        const form=item.arabic?.[key];
+        const arabic=document.createElement("div");arabic.className="arabic";arabic.dir="rtl";arabic.lang="ar";arabic.textContent=form?.text||"טרם נוסף תרגום";row.append(arabic);
+        if(form?.transliteration_he){
+          const transliteration=document.createElement("div");transliteration.className="transliteration";transliteration.textContent="תעתיק: "+form.transliteration_he;row.append(transliteration);
+        }
+        article.append(row);
+      }
+      out.append(article);
+    }
+  }catch(error){notice("לא ניתן להתחבר לחיפוש כרגע. בדקו את החיבור ונסו שוב.");}
+  finally{button.disabled=false;}
+});
+</script>
+</body>
+</html>
