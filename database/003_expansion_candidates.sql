@@ -1,4 +1,4 @@
--- Phase 3: 34 additional common-word candidates (16 existing + 34 = 50 if starter scripts applied).
+-- Phase 3: 35 additional common-word candidates (16 existing + 35 = 51 if starter scripts applied).
 -- Original draft entries. Palestinian forms and Hebrew transliterations REQUIRE linguistic review;
 -- Palestinian urban variants are provisional; local pronunciations differ (especially qaf).
 -- Arabic fish is singular سمكة, not mass-noun سمك. Keep review_status='unreviewed'.
@@ -29,6 +29,8 @@
 -- glossed rain there (winter-derived), contrary to our earlier blanket
 -- exclusion; retain مَطَر as the basic translation.
 -- Source comparisons are first-pass only: other forms and meanings remain unreviewed.
+-- Sense split: existing אדמה means land/ground (أرض); new אדמה (חומר הקרקע)
+-- means soil (تربة), Maknuune v1.0.1 ID 2912. Hebrew search אדמה returns both.
 -- Do NOT execute in Neon until all entries and transliterations are reviewed.
 BEGIN;
 INSERT INTO dictionary_entries(entry_key,hebrew,hebrew_search,review_status)
@@ -66,8 +68,14 @@ VALUES
 ('he-expansion-31','שמים','שמים','unreviewed'),
 ('he-expansion-32','גשם','גשם','unreviewed'),
 ('he-expansion-33','רוח','רוח','unreviewed'),
-('he-expansion-34','אש','אש','unreviewed')
+('he-expansion-34','אש','אש','unreviewed'),
+('he-expansion-35','אדמה (חומר הקרקע)','אדמה','unreviewed')
 ON CONFLICT(entry_key) DO NOTHING;
+
+UPDATE dictionary_entries SET notes='ארץ, שטח או קרקע; לא חומר האדמה שבעציץ.'
+WHERE entry_key='he-expansion-30';
+UPDATE dictionary_entries SET notes='חומר הקרקע, למשל אדמה בעציץ; לא ארץ או שטח.'
+WHERE entry_key='he-expansion-35';
 
 INSERT INTO arabic_forms(entry_id,dialect,arabic_vocalized,arabic_search,hebrew_transliteration)
 SELECT e.id,v.dialect,v.vocalized,v.search,v.transliteration
@@ -139,7 +147,9 @@ FROM (VALUES
 ('he-expansion-33','msa','رِيح','ريح','רִיח'),
 ('he-expansion-33','palestinian','رِيح','ريح','רִיח'),
 ('he-expansion-34','msa','نَار','نار','נַאר'),
-('he-expansion-34','palestinian','نَار','نار','נַאר')
+('he-expansion-34','palestinian','نَار','نار','נַאר'),
+('he-expansion-35','msa','تُرْبَة','تربة','תֻרְבַּה'),
+('he-expansion-35','palestinian','تُرْبِة','تربة','תֻרְבֶּה')
 ) AS v(entry_key,dialect,vocalized,search,transliteration)
 JOIN dictionary_entries e ON e.entry_key=v.entry_key
 WHERE NOT EXISTS (
