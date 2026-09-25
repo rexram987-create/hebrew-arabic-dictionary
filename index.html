@@ -121,12 +121,37 @@ form.addEventListener("submit",async event=>{
         if(form?.text){
           // Display the original vowelized spelling; pronounce "sun" without diacritics
           // because the tested Android Arabic voice adds an unwanted ending otherwise.
-          const speechText=normalizeArabic(form.text)==="شمس"?"شمس":form.text;
+          const plainText=normalizeArabic(form.text);
+          let speechText=plainText==="شمس"?plainText:form.text;
+          let pronunciationSelect=null;
+          if(plainText!==form.text){
+            const label=document.createElement("label");
+            label.textContent="אופן ההשמעה: ";
+            label.style.display="block";
+            label.style.marginTop="10px";
+            const select=document.createElement("select");
+            select.style.cssText="font:inherit;min-height:44px;padding:8px;border-radius:10px;background:#162a32;color:#fff;border:1px solid #658080";
+            for(const [value,name] of [["vocalized","עם ניקוד"],["plain","בלי ניקוד"]]){
+              const option=document.createElement("option");
+              option.value=value;option.textContent=name;select.append(option);
+            }
+            select.value=plainText==="شمس"?"plain":"vocalized";
+            label.append(select);row.append(label);
+            pronunciationSelect=select;
+          }
           const play=document.createElement("button");
           play.type="button";play.className="speak";play.textContent="🔊 השמע הגייה";
           play.setAttribute("aria-label","השמע הגייה ב"+label+": "+form.text);
           const status=document.createElement("div");status.className="audio-status";status.setAttribute("aria-live","polite");
           if(!canSpeak){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
+          if(pronunciationSelect)pronunciationSelect.addEventListener("change",()=>{
+            speechText=pronunciationSelect.value==="plain"?plainText:form.text;
+            if(activeSpeech?.button===play){
+              window.speechSynthesis.cancel();activeSpeech=null;
+              play.textContent="🔊 השמע הגייה";
+              status.textContent="אפשר להשמיע כעת את הצורה שנבחרה.";
+            }
+          });
           play.addEventListener("click",()=>{
             if(activeSpeech?.button===play){window.speechSynthesis.cancel();activeSpeech=null;play.textContent="🔊 השמע הגייה";status.textContent="ההשמעה נעצרה.";}
             else speakArabic(speechText,key,play,status);
