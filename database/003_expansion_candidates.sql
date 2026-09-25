@@ -4,6 +4,10 @@
 -- Arabic fish is singular سمكة, not mass-noun سمك. Keep review_status='unreviewed'.
 -- Reviewed draft notes: بنت can mean both daughter and girl; rain uses colloquial شتا.
 -- Some urban Palestinian pronunciations have final -e for feminine ta marbuta.
+-- Palestinian final -e is represented by kasra in these three draft feminine forms.
+-- IMPORTANT: WHERE NOT EXISTS prevents updating existing dialect rows. If a previous
+-- version was imported, review and migrate existing rows separately; do not rerun
+-- this file expecting earlier forms to be corrected.
 -- Execute in Neon SQL Editor only after reviewing the vocabulary. Idempotent inserts.
 BEGIN;
 INSERT INTO dictionary_entries(entry_key,hebrew,hebrew_search,review_status)
@@ -94,13 +98,13 @@ FROM (VALUES
 ('he-expansion-23','msa','حِصَان','حصان','חִצַאן'),
 ('he-expansion-23','palestinian','حِصَان','حصان','חִצַאן'),
 ('he-expansion-24','msa','سَمَكَة','سمكة','סַמַכַּה'),
-('he-expansion-24','palestinian','سَمَكَة','سمكة','סַמַכֶּה'),
+('he-expansion-24','palestinian','سَمَكِة','سمكة','סַמַכֶּה'),
 ('he-expansion-25','msa','طَائِر','طائر','טַאאִר'),
 ('he-expansion-25','palestinian','طَيْر','طير','טֵיר'),
 ('he-expansion-26','msa','شَجَرَة','شجرة','שַג׳ַרַה'),
-('he-expansion-26','palestinian','شَجَرَة','شجرة','שַג׳ַרֶה'),
+('he-expansion-26','palestinian','شَجَرِة','شجرة','שַג׳ַרֶה'),
 ('he-expansion-27','msa','زَهْرَة','زهرة','זַהְרַה'),
-('he-expansion-27','palestinian','زَهْرَة','زهرة','זַהְרֶה'),
+('he-expansion-27','palestinian','زَهْرِة','زهرة','זַהְרֶה'),
 ('he-expansion-28','msa','بَحْر','بحر','בַּחְר'),
 ('he-expansion-28','palestinian','بَحْر','بحر','בַּחְר'),
 ('he-expansion-29','msa','جَبَل','جبل','ג׳ַבַּל'),
