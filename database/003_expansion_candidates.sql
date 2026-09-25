@@ -18,6 +18,9 @@
 -- IMPORTANT: WHERE NOT EXISTS prevents updating existing dialect rows. If a previous
 -- version was imported, review and migrate existing rows separately; do not rerun
 -- this file expecting earlier forms to be corrected.
+-- CAPHI++ cross-check: friend ID 17472 s. aa 7 i b (Hebrew i, not e);
+-- eye ID 22266 3 ee n (Hebrew ey, not ay). Maknuune uses عَين
+-- as CODA orthography while CAPHI++ encodes the spoken vowel.
 -- Source comparisons are first-pass only: other forms and meanings remain unreviewed.
 -- Do NOT execute in Neon until all entries and transliterations are reviewed.
 BEGIN;
@@ -83,7 +86,7 @@ FROM (VALUES
 ('he-expansion-10','msa','اِمْرَأَة','امرأة','אִמְרַאַה'),
 ('he-expansion-10','palestinian','مَرَة','مرة','מַרַה'),
 ('he-expansion-11','msa','صَدِيق','صديق','צַדִיק'),
-('he-expansion-11','palestinian','صَاحِب','صاحب','צַאחֶבּ'),
+('he-expansion-11','palestinian','صَاحِب','صاحب','צַאחִבּ'),
 ('he-expansion-12','msa','صَدِيقَة','صديقة','צַדִיקַה'),
 ('he-expansion-12','palestinian','صَاحْبِة','صاحبة','צַאחְבֶּה'),
 ('he-expansion-13','msa','يَد','يد','יַד'),
@@ -91,7 +94,7 @@ FROM (VALUES
 ('he-expansion-14','msa','رَأْس','رأس','רַאְס'),
 ('he-expansion-14','palestinian','رَاس','راس','רַאס'),
 ('he-expansion-15','msa','عَيْن','عين','עַיְן'),
-('he-expansion-15','palestinian','عَيْن','عين','עַיְן'),
+('he-expansion-15','palestinian','عَين','عين','עֵין'),
 ('he-expansion-16','msa','أُذُن','أذن','אֻד׳ֻן'),
 ('he-expansion-16','palestinian','وِدْن','ودن','וִדְן'),
 ('he-expansion-17','msa','فَم','فم','פַם'),
