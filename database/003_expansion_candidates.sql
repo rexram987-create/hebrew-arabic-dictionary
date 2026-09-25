@@ -76,6 +76,18 @@ UPDATE dictionary_entries SET notes='ארץ, שטח או קרקע; לא חומר
 WHERE entry_key='he-expansion-30';
 UPDATE dictionary_entries SET notes='חומר הקרקע, למשל אדמה בעציץ; לא ארץ או שטח.'
 WHERE entry_key='he-expansion-35';
+UPDATE dictionary_entries SET notes='בת במשמעות daughter; בِنْت משמשת גם לילדה. יש לברר משמעות לפי הקשר.'
+WHERE entry_key='he-expansion-06';
+UPDATE dictionary_entries SET notes='ילדה במשמעות girl; בِنْت משמשת גם לבת של אדם.'
+WHERE entry_key='he-expansion-08';
+UPDATE dictionary_entries SET notes='חבר במשמעות ידיד, לא חבר בארגון או בן זוג בהכרח.'
+WHERE entry_key='he-expansion-11';
+UPDATE dictionary_entries SET notes='חברה במשמעות ידידה, לא חברה עסקית; אין להסיק בהכרח בת זוג.'
+WHERE entry_key='he-expansion-12';
+UPDATE dictionary_entries SET notes='ציפור במובן כללי; לא בהכרח דרור או ציפור שיר קטנה.'
+WHERE entry_key='he-expansion-25';
+UPDATE dictionary_entries SET notes='הגיית ق משתנה בין ניבים; התעתיק אַלְבּ משקף הגייה עירונית, בעוד קַלְבּ משקף qaf כ־ק.'
+WHERE entry_key='he-expansion-18';
 
 INSERT INTO arabic_forms(entry_id,dialect,arabic_vocalized,arabic_search,hebrew_transliteration)
 SELECT e.id,v.dialect,v.vocalized,v.search,v.transliteration
