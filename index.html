@@ -64,24 +64,26 @@ function speakArabic(text,dialect,button,status){
   if(!canSpeak){status.textContent="המכשיר או הדפדפן אינם תומכים בהשמעה.";return;}
   window.speechSynthesis.cancel();
   if(activeSpeech){activeSpeech.button.textContent="🔊 השמע הגייה";activeSpeech=null;}
-  const voices=window.speechSynthesis.getVoices().filter(v=>/^ar(?:-|$)/i.test(v.lang));
+  // Chrome on Android can return an empty voice list even when an Arabic TTS voice is installed.
+  // The browser can still choose the system voice when only utterance.lang is set.
+  const voices=window.speechSynthesis.getVoices().filter(v=>/^ar(?:[-_]|$)/i.test(v.lang));
   const preferred=dialect==="palestinian"
-    ?voices.find(v=>/^ar-PS$/i.test(v.lang))
-    :voices.find(v=>/^ar-(SA|EG)$/i.test(v.lang));
-  const voice=preferred||voices.find(v=>/^ar-/i.test(v.lang))||voices[0];
-  if(!voice){status.textContent="לא נמצא קול ערבי במכשיר. אפשר להתקין קול ערבי בהגדרות ההקראה של Android.";return;}
+    ?voices.find(v=>/^ar[-_]PS$/i.test(v.lang))
+    :voices.find(v=>/^ar[-_](SA|EG)$/i.test(v.lang));
+  const voice=preferred||voices[0]||null;
   const utterance=new SpeechSynthesisUtterance(text);
-  utterance.lang=voice.lang;
-  utterance.voice=voice;
+  utterance.lang=voice?.lang||"ar";
+  if(voice)utterance.voice=voice;
   utterance.rate=.82;
-  const fallback=dialect==="palestinian"&&!/^ar-PS$/i.test(voice.lang);
-  status.textContent=fallback?"מושמע קול ערבי חלופי; ייתכן שאינו מבטא את הניב הפלסטיני במדויק.":"מנגן הגייה ממוחשבת…";
+  const fallback=dialect==="palestinian"&&!/^ar[-_]PS$/i.test(voice?.lang||"");
+  status.textContent=fallback?"מנסה להשמיע בקול ערבי זמין; ייתכן שאינו מבטא ניב פלסטיני במדויק.":"מנסה להשמיע הגייה ממוחשבת…";
   button.textContent="■ עצור השמעה";
   activeSpeech={button,utterance};
-  utterance.onend=()=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";activeSpeech=null;}};
-  utterance.onerror=event=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";activeSpeech=null;if(event.error!=="canceled"&&event.error!=="interrupted")status.textContent="ההשמעה נכשלה. בדקו שקול ערבי מותקן במכשיר."; }};
+  utterance.onend=()=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";status.textContent="ההשמעה הסתיימה.";activeSpeech=null;}};
+  utterance.onerror=event=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";activeSpeech=null;if(event.error!=="canceled"&&event.error!=="interrupted")status.textContent="לא ניתן להשמיע כרגע. בדקו את הגדרות ההקראה או נסו שוב."; }};
   window.speechSynthesis.speak(utterance);
 }
+
 fetch("/api/health").then(r=>r.ok?r.json():Promise.reject()).then(d=>{
   count.textContent=Number.isInteger(d.entries)?d.entries+" ערכים במאגר":"מאגר המילון";
 }).catch(()=>{count.textContent="מאגר המילון";});
