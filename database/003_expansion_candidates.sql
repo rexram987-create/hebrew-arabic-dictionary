@@ -2,13 +2,18 @@
 -- Original draft entries. Palestinian forms and Hebrew transliterations REQUIRE linguistic review;
 -- Palestinian urban variants are provisional; local pronunciations differ (especially qaf).
 -- Arabic fish is singular سمكة, not mass-noun سمك. Keep review_status='unreviewed'.
--- Reviewed draft notes: بنت can mean both daughter and girl; rain uses colloquial شتا.
+-- Maknuune v1.0.1 row checks: sister 151, son 2425, girl 2341, man 13123,
+-- hair 16356, fish 14964, tree 15643, flower 13269, rain 30854.
+-- Maknuune row 15638 glosses شِتَا as winter, so it is NOT used for rain here.
+-- بنت can mean both daughter and girl; source row 2341 explicitly glosses girl.
 -- Some urban Palestinian pronunciations have final -e for feminine ta marbuta.
--- Palestinian final -e is represented by kasra in these three draft feminine forms.
+-- Palestinian feminine endings follow individual source entries: fish سَمَكِة (-e),
+-- tree شَجَرَة (-a), flower زَهْرَة (-a). Do not generalize endings.
 -- IMPORTANT: WHERE NOT EXISTS prevents updating existing dialect rows. If a previous
 -- version was imported, review and migrate existing rows separately; do not rerun
 -- this file expecting earlier forms to be corrected.
--- Execute in Neon SQL Editor only after reviewing the vocabulary. Idempotent inserts.
+-- Source comparisons are first-pass only: other forms and meanings remain unreviewed.
+-- Do NOT execute in Neon until all entries and transliterations are reviewed.
 BEGIN;
 INSERT INTO dictionary_entries(entry_key,hebrew,hebrew_search,review_status)
 VALUES
@@ -58,17 +63,17 @@ FROM (VALUES
 ('he-expansion-03','msa','أَخ','أخ','אַח׳'),
 ('he-expansion-03','palestinian','أَخ','أخ','אַח׳'),
 ('he-expansion-04','msa','أُخْت','أخت','אֻח׳ת'),
-('he-expansion-04','palestinian','أُخْت','أخت','אֻח׳ת'),
+('he-expansion-04','palestinian','أُخُت','أخت','אֻח׳ֻת'),
 ('he-expansion-05','msa','اِبْن','ابن','אִבְּן'),
-('he-expansion-05','palestinian','اِبْن','ابن','אִבְּן'),
+('he-expansion-05','palestinian','اِبِن','ابن','אִבִּן'),
 ('he-expansion-06','msa','بِنْت','بنت','בִּנְת'),
-('he-expansion-06','palestinian','بِنْت','بنت','בִּנְת'),
+('he-expansion-06','palestinian','بِنِت','بنت','בִּנִת'),
 ('he-expansion-07','msa','وَلَد','ولد','וַלַד'),
 ('he-expansion-07','palestinian','وَلَد','ولد','וַלַד'),
 ('he-expansion-08','msa','بِنْت','بنت','בִּנְת'),
-('he-expansion-08','palestinian','بِنْت','بنت','בִּנְת'),
+('he-expansion-08','palestinian','بِنِت','بنت','בִּנִת'),
 ('he-expansion-09','msa','رَجُل','رجل','רַג׳ֻל'),
-('he-expansion-09','palestinian','زَلَمَة','زلمة','זַלַמַה'),
+('he-expansion-09','palestinian','زَلَمِة','زلمة','זַלַמֶה'),
 ('he-expansion-10','msa','اِمْرَأَة','امرأة','אִמְרַאַה'),
 ('he-expansion-10','palestinian','مَرَة','مرة','מַרַה'),
 ('he-expansion-11','msa','صَدِيق','صديق','צַדִיק'),
@@ -90,7 +95,7 @@ FROM (VALUES
 ('he-expansion-19','msa','سِنّ','سن','סִןּ'),
 ('he-expansion-19','palestinian','سِنّ','سن','סִןּ'),
 ('he-expansion-20','msa','شَعْر','شعر','שַעְר'),
-('he-expansion-20','palestinian','شَعِر','شعر','שַעֶר'),
+('he-expansion-20','palestinian','شَعَر','شعر','שַעַר'),
 ('he-expansion-21','msa','قِطّ','قط','קִטּ'),
 ('he-expansion-21','palestinian','بِسَّة','بسة','בִּסַּה'),
 ('he-expansion-22','msa','كَلْب','كلب','כַּלְבּ'),
@@ -102,9 +107,9 @@ FROM (VALUES
 ('he-expansion-25','msa','طَائِر','طائر','טַאאִר'),
 ('he-expansion-25','palestinian','طَيْر','طير','טֵיר'),
 ('he-expansion-26','msa','شَجَرَة','شجرة','שַג׳ַרַה'),
-('he-expansion-26','palestinian','شَجَرِة','شجرة','שַג׳ַרֶה'),
+('he-expansion-26','palestinian','شَجَرَة','شجرة','שַג׳ַרַה'),
 ('he-expansion-27','msa','زَهْرَة','زهرة','זַהְרַה'),
-('he-expansion-27','palestinian','زَهْرِة','زهرة','זַהְרֶה'),
+('he-expansion-27','palestinian','زَهْرَة','زهرة','זַהְרַה'),
 ('he-expansion-28','msa','بَحْر','بحر','בַּחְר'),
 ('he-expansion-28','palestinian','بَحْر','بحر','בַּחְר'),
 ('he-expansion-29','msa','جَبَل','جبل','ג׳ַבַּל'),
@@ -114,7 +119,7 @@ FROM (VALUES
 ('he-expansion-31','msa','سَمَاء','سماء','סַמַאא׳'),
 ('he-expansion-31','palestinian','سَمَا','سما','סַמַא'),
 ('he-expansion-32','msa','مَطَر','مطر','מַטַר'),
-('he-expansion-32','palestinian','شِتَا','شتا','שִתַא'),
+('he-expansion-32','palestinian','مَطَرَة','مطرة','מַטַרַה'),
 ('he-expansion-33','msa','رِيح','ريح','רִיח'),
 ('he-expansion-33','palestinian','رِيح','ريح','רִיח'),
 ('he-expansion-34','msa','نَار','نار','נַאר'),
