@@ -48,3 +48,19 @@ Obtain the source lexicon TSV from the project site's official download, record 
 - Rain-source correction: ID 30854 مَطَرَة = rain, ID 30855 مَطَرَة = water_bottle, ID 30853 مَطَر = airport;airfield. The TSV does NOT supply a noun entry مَطَر glossed rain, so do not label the Palestinian noun form مَطَر source-verified by this TSV. Standard Arabic مَطَر means rain; retain Palestinian usage provisionally until corroborated elsewhere.
 - ID 26506 قَلْب = stomach (MSA gloss معدة); not evidence for heart. Other heart-related phrases exist but do not resolve standalone headword sense.
 - NOTE: earlier audit line claiming source ID 30854 had airport gloss is INCORRECT; the airport gloss is ID 30853. This section supersedes that line.
+
+## Complete first-pass lemma scan, Maknuune v1.0.1 (2026-09-25)
+Compared all 34 Palestinian draft headwords to normalized LEMMA and FORM columns, then manually inspected the matching gloss and CAPHI++ rather than treating an orthographic match as proof of the intended sense. Relevant source IDs: mother 529, father 11, brother 162, sister 151, son 2425, girl 2341, boy 36009, man 13123, woman 30368, friend 17472, hand 36210, head 10896, eye 22266, tooth 15087, hair 16356, cat 1442, dog 28213, horse 6229, fish 14964, bird 19781, tree 15643, flower 13269, sea 812, mountain 3559, land 255, sky 15012, wind 12519, fire 33728.
+
+**Unresolved or false matches**:
+- Female friend صَاحْبِة: no exact undiacritized LEMMA or FORM match صاحبة. Must not mark verified.
+- Ear وِدْن: no exact undiacritized LEMMA or FORM match ودن. Seek another spelling/source.
+- Mouth تِمّ: exact تم matches only verb 'complete;remain;stay' (IDs 3191,3195); no mouth gloss in these matches. Seek alternate Palestinian term or independent source.
+- Heart قَلْب: exact noun match ID 26506 glosses **stomach**, not heart. Do not infer heart sense from this entry.
+- Rain مَطَر: exact noun ID 30853 glosses **airport;airfield**, not rain; مَطَرَة ID 30854 glosses rain. The generic MSA meaning of مطر is rain but this TSV does not establish the Palestinian standalone noun's sense.
+- Daughter and girl: بنت ID 2341 glosses girl, not explicitly daughter. Hebrew 'בת' requires additional sense corroboration.
+- Earth/soil אדמה: أرض ID 255 glosses land;territory;land_plot, not necessarily soil. Distinguish 'land' from 'soil' in Hebrew gloss.
+- Friend صَاحِب CAPHI s. aa 7 i b (צַאחִבּ) and eye عَين CAPHI 3 ee n (עֵין) checked.
+- Cat بِسّ ID 1442 is cat; the older draft بِسَّة was not found as an exact normalized lemma/form. Horse حْصَان ID 6229; sea بَحَر ID 812.
+
+This scan is NOT a full pronunciation/TTS or 68-form verification. Source match means this sense is attested in the dataset, not that all dialect speakers use it or that Hebrew transliteration is approved. Keep import blocked.
