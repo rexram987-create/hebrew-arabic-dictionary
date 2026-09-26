@@ -70,17 +70,20 @@ function speakArabic(text,dialect,button,status){
   if(activeSpeech){activeSpeech.button.textContent="🔊 השמע הגייה";activeSpeech=null;}
   // Chrome on Android can return an empty voice list even when an Arabic TTS voice is installed.
   // The browser can still choose the system voice when only utterance.lang is set.
-  const voices=window.speechSynthesis.getVoices().filter(v=>/^ar(?:[-_]|$)/i.test(v.lang));
-  const preferred=dialect==="palestinian"
-    ?voices.find(v=>/^ar[-_]PS$/i.test(v.lang))
-    :voices.find(v=>/^ar[-_](SA|EG)$/i.test(v.lang));
+  const latinTest=dialect==="palestinian"&&text==="bis";
+  const voices=window.speechSynthesis.getVoices().filter(v=>latinTest?/^en(?:[-_]|$)/i.test(v.lang):/^ar(?:[-_]|$)/i.test(v.lang));
+  const preferred=latinTest
+    ?voices.find(v=>/^en[-_]US$/i.test(v.lang))
+    :dialect==="palestinian"
+      ?voices.find(v=>/^ar[-_]PS$/i.test(v.lang))
+      :voices.find(v=>/^ar[-_](SA|EG)$/i.test(v.lang));
   const voice=preferred||voices[0]||null;
   const utterance=new SpeechSynthesisUtterance(text);
-  utterance.lang=voice?.lang||"ar";
+  utterance.lang=voice?.lang||(latinTest?"en-US":"ar");
   if(voice)utterance.voice=voice;
   utterance.rate=.82;
-  const fallback=dialect==="palestinian"&&!/^ar[-_]PS$/i.test(voice?.lang||"");
-  status.textContent=fallback?"מנסה להשמיע בקול ערבי זמין; ייתכן שאינו מבטא ניב פלסטיני במדויק.":"מנסה להשמיע הגייה ממוחשבת…";
+  const fallback=dialect==="palestinian"&&!latinTest&&!/^ar[-_]PS$/i.test(voice?.lang||"");
+  status.textContent=latinTest?"ניסיון השמעה של bis בקול אנגלי; זו בדיקה בלבד.":fallback?"מנסה להשמיע בקול ערבי זמין; ייתכן שאינו מבטא ניב פלסטיני במדויק.":"מנסה להשמיע הגייה ממוחשבת…";
   button.textContent="■ עצור השמעה";
   activeSpeech={button,utterance};
   utterance.onend=()=>{if(activeSpeech?.utterance===utterance){button.textContent="🔊 השמע הגייה";status.textContent="ההשמעה הסתיימה.";activeSpeech=null;}};
@@ -123,6 +126,7 @@ form.addEventListener("submit",async event=>{
           // because the tested Android Arabic voice adds an unwanted ending otherwise.
           const plainText=normalizeArabic(form.text);
           let speechText=plainText==="شمس"?plainText:form.text;
+          const canTryBis=key==="palestinian"&&plainText==="بس";
           let pronunciationSelect=null;
           if(plainText!==form.text){
             const label=document.createElement("label");
@@ -131,7 +135,9 @@ form.addEventListener("submit",async event=>{
             label.style.marginTop="10px";
             const select=document.createElement("select");
             select.style.cssText="font:inherit;min-height:44px;padding:8px;border-radius:10px;background:#162a32;color:#fff;border:1px solid #658080";
-            for(const [value,name] of [["vocalized","עם ניקוד"],["plain","בלי ניקוד"]]){
+            const options=[["vocalized","עם ניקוד"],["plain","בלי ניקוד"]];
+            if(canTryBis)options.push(["latin-bis","ניסיון: bis (אותיות לטיניות)"]);
+            for(const [value,name] of options){
               const option=document.createElement("option");
               option.value=value;option.textContent=name;select.append(option);
             }
@@ -145,7 +151,7 @@ form.addEventListener("submit",async event=>{
           const status=document.createElement("div");status.className="audio-status";status.setAttribute("aria-live","polite");
           if(!canSpeak){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
           if(pronunciationSelect)pronunciationSelect.addEventListener("change",()=>{
-            speechText=pronunciationSelect.value==="plain"?plainText:form.text;
+            speechText=pronunciationSelect.value==="latin-bis"?"bis":pronunciationSelect.value==="plain"?plainText:form.text;
             if(activeSpeech?.button===play){
               window.speechSynthesis.cancel();activeSpeech=null;
               play.textContent="🔊 השמע הגייה";
