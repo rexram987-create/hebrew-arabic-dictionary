@@ -142,8 +142,10 @@ form.addEventListener("submit",async event=>{
           const plainText=normalizeArabic(form.text);
           let speechText=plainText==="شمس"?plainText:form.text;
           const recordedBis=key==="palestinian"&&plainText==="بس";
+          const recordedBayt=plainText==="بيت";
+          const recordingUrl=recordedBis?"/audio/palestinian/biss.wav":recordedBayt?"/audio/palestinian/bayt.wav":null;
           let pronunciationSelect=null;
-          if(plainText!==form.text){
+          if(plainText!==form.text||recordingUrl){
             const label=document.createElement("label");
             label.textContent="אופן ההשמעה: ";
             label.style.display="block";
@@ -151,12 +153,12 @@ form.addEventListener("submit",async event=>{
             const select=document.createElement("select");
             select.style.cssText="font:inherit;min-height:44px;padding:8px;border-radius:10px;background:#162a32;color:#fff;border:1px solid #658080";
             const options=[["vocalized","עם ניקוד"],["plain","בלי ניקוד"]];
-            if(recordedBis)options.push(["recording","הקלטה מדויקת"]);
+            if(recordingUrl)options.push(["recording","הקלטה מדויקת"]);
             for(const [value,name] of options){
               const option=document.createElement("option");
               option.value=value;option.textContent=name;select.append(option);
             }
-            select.value=recordedBis?"recording":plainText==="شمس"?"plain":"vocalized";
+            select.value=recordingUrl?"recording":plainText==="شمس"?"plain":"vocalized";
             label.append(select);row.append(label);
             pronunciationSelect=select;
           }
@@ -164,7 +166,7 @@ form.addEventListener("submit",async event=>{
           play.type="button";play.className="speak";play.textContent="🔊 השמע הגייה";
           play.setAttribute("aria-label","השמע הגייה ב"+label+": "+form.text);
           const status=document.createElement("div");status.className="audio-status";status.setAttribute("aria-live","polite");
-          if(!canSpeak&&!recordedBis){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
+          if(!canSpeak&&!recordingUrl){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
           if(pronunciationSelect)pronunciationSelect.addEventListener("change",()=>{
             speechText=pronunciationSelect.value==="plain"?plainText:form.text;
             if(activeSpeech?.button===play||activeRecording?.button===play){
@@ -174,7 +176,7 @@ form.addEventListener("submit",async event=>{
           });
           play.addEventListener("click",()=>{
             if(activeSpeech?.button===play||activeRecording?.button===play){stopAudio();status.textContent="ההשמעה נעצרה.";}
-            else if(recordedBis&&pronunciationSelect?.value==="recording")playRecording("/audio/palestinian/biss.wav",play,status);
+            else if(recordingUrl&&pronunciationSelect?.value==="recording")playRecording(recordingUrl,play,status);
             else speakArabic(speechText,key,play,status);
           });
           row.append(play,status);
