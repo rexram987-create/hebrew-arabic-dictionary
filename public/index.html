@@ -143,7 +143,7 @@ form.addEventListener("submit",async event=>{
           let speechText=plainText==="شمس"?plainText:form.text;
           const recordedBis=key==="palestinian"&&plainText==="بس";
           const recordedBayt=plainText==="بيت";
-          const recordingUrl=recordedBis?"/audio/palestinian/biss.wav":recordedBayt?"/audio/palestinian/bayt.wav":plainText==="كلب"?"/audio/palestinian/kalb.wav":key==="msa"&&plainText==="أخت"?"/audio/palestinian/ukht.wav":null;
+          const recordingUrl=recordedBis?"/audio/palestinian/biss.wav":recordedBayt?"/audio/palestinian/bayt.wav":plainText==="كلب"?"/audio/palestinian/kalb.wav":key==="msa"&&plainText==="أخت"?"/audio/palestinian/ukht.wav":key==="msa"&&plainText==="ابن"?"/audio/palestinian/ibn.wav":null;
           let pronunciationSelect=null;
           if(plainText!==form.text||recordingUrl){
             const label=document.createElement("label");
