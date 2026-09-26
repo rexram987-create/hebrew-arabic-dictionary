@@ -49,7 +49,7 @@ footer{font-size:.82rem;color:#b7cacc;margin:30px 0}
 <button id="submit" type="submit">חפש</button>
 </form>
 <div id="out" aria-live="polite"><p class="notice">הקלידו מילה כדי להתחיל לחפש.</p></div>
-<p class="audio-help">ההשמעה היא קול ממוחשב מהמכשיר. הגייה פלסטינית מדויקת תלויה בזמינות קול מתאים בטלפון; הקול הספרותי עשוי לשמש כתחליף.</p>
+<p class="audio-help">רוב ההשמעות הן בקול ממוחשב מהמכשיר. למילים מסוימות יש הקלטה מדויקת; הגייה פלסטינית ממוחשבת תלויה בזמינות קול מתאים בטלפון.</p>
 <footer>המאגר נמצא בהרחבה. התעתיקים והניקוד בדוגמאות החדשות ממתינים לבדיקה לשונית.</footer>
 </main>
 <script>
@@ -60,14 +60,29 @@ const button=document.getElementById("submit");
 const count=document.getElementById("count");
 const canSpeak=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
 let activeSpeech=null;
+let activeRecording=null;
+function stopAudio(){
+  if(canSpeak)window.speechSynthesis.cancel();
+  if(activeSpeech){activeSpeech.button.textContent="🔊 השמע הגייה";activeSpeech=null;}
+  if(activeRecording){activeRecording.audio.pause();activeRecording.audio.currentTime=0;activeRecording.button.textContent="🔊 השמע הגייה";activeRecording=null;}
+}
+function playRecording(url,button,status){
+  stopAudio();
+  const audio=new Audio(url);
+  activeRecording={audio,button};
+  button.textContent="■ עצור השמעה";
+  status.textContent="משמיע הקלטת הגייה…";
+  audio.onended=()=>{if(activeRecording?.audio===audio){button.textContent="🔊 השמע הגייה";status.textContent="ההשמעה הסתיימה.";activeRecording=null;}};
+  audio.onerror=()=>{if(activeRecording?.audio===audio){button.textContent="🔊 השמע הגייה";status.textContent="לא ניתן לטעון את ההקלטה כרגע.";activeRecording=null;}};
+  audio.play().catch(()=>{if(activeRecording?.audio===audio){button.textContent="🔊 השמע הגייה";status.textContent="לא ניתן להשמיע כרגע. נסו שוב.";activeRecording=null;}});
+}
 // Speech-only overrides never modify the dictionary spelling or its stored vocalization.
 function normalizeArabic(value){
   return value.normalize("NFC").replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g,"");
 }
 function speakArabic(text,dialect,button,status){
   if(!canSpeak){status.textContent="המכשיר או הדפדפן אינם תומכים בהשמעה.";return;}
-  window.speechSynthesis.cancel();
-  if(activeSpeech){activeSpeech.button.textContent="🔊 השמע הגייה";activeSpeech=null;}
+  stopAudio();
   // Chrome on Android can return an empty voice list even when an Arabic TTS voice is installed.
   // The browser can still choose the system voice when only utterance.lang is set.
   const latinTest=dialect==="palestinian"&&text==="bis";
@@ -102,7 +117,7 @@ form.addEventListener("submit",async event=>{
   event.preventDefault();
   const q=input.value.trim();
   if(!q)return;
-  if(canSpeak){window.speechSynthesis.cancel();activeSpeech=null;}
+  stopAudio();
   button.disabled=true;notice("מחפש…");
   try{
     const response=await fetch("/api/search?q="+encodeURIComponent(q));
@@ -126,7 +141,7 @@ form.addEventListener("submit",async event=>{
           // because the tested Android Arabic voice adds an unwanted ending otherwise.
           const plainText=normalizeArabic(form.text);
           let speechText=plainText==="شمس"?plainText:form.text;
-          const canTryBis=key==="palestinian"&&plainText==="بس";
+          const recordedBis=key==="palestinian"&&plainText==="بس";
           let pronunciationSelect=null;
           if(plainText!==form.text){
             const label=document.createElement("label");
@@ -136,12 +151,12 @@ form.addEventListener("submit",async event=>{
             const select=document.createElement("select");
             select.style.cssText="font:inherit;min-height:44px;padding:8px;border-radius:10px;background:#162a32;color:#fff;border:1px solid #658080";
             const options=[["vocalized","עם ניקוד"],["plain","בלי ניקוד"]];
-            if(canTryBis)options.push(["latin-bis","ניסיון: bis (אותיות לטיניות)"]);
+            if(recordedBis)options.push(["recording","הקלטה מדויקת"]);
             for(const [value,name] of options){
               const option=document.createElement("option");
               option.value=value;option.textContent=name;select.append(option);
             }
-            select.value=plainText==="شمس"?"plain":"vocalized";
+            select.value=recordedBis?"recording":plainText==="شمس"?"plain":"vocalized";
             label.append(select);row.append(label);
             pronunciationSelect=select;
           }
@@ -149,17 +164,17 @@ form.addEventListener("submit",async event=>{
           play.type="button";play.className="speak";play.textContent="🔊 השמע הגייה";
           play.setAttribute("aria-label","השמע הגייה ב"+label+": "+form.text);
           const status=document.createElement("div");status.className="audio-status";status.setAttribute("aria-live","polite");
-          if(!canSpeak){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
+          if(!canSpeak&&!recordedBis){play.disabled=true;status.textContent="השמעה אינה נתמכת בדפדפן הזה.";}
           if(pronunciationSelect)pronunciationSelect.addEventListener("change",()=>{
-            speechText=pronunciationSelect.value==="latin-bis"?"bis":pronunciationSelect.value==="plain"?plainText:form.text;
-            if(activeSpeech?.button===play){
-              window.speechSynthesis.cancel();activeSpeech=null;
-              play.textContent="🔊 השמע הגייה";
+            speechText=pronunciationSelect.value==="plain"?plainText:form.text;
+            if(activeSpeech?.button===play||activeRecording?.button===play){
+              stopAudio();
               status.textContent="אפשר להשמיע כעת את הצורה שנבחרה.";
             }
           });
           play.addEventListener("click",()=>{
-            if(activeSpeech?.button===play){window.speechSynthesis.cancel();activeSpeech=null;play.textContent="🔊 השמע הגייה";status.textContent="ההשמעה נעצרה.";}
+            if(activeSpeech?.button===play||activeRecording?.button===play){stopAudio();status.textContent="ההשמעה נעצרה.";}
+            else if(recordedBis&&pronunciationSelect?.value==="recording")playRecording("/audio/palestinian/biss.wav",play,status);
             else speakArabic(speechText,key,play,status);
           });
           row.append(play,status);
